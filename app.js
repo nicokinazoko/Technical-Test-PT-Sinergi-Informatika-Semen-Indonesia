@@ -175,20 +175,18 @@ async function processPopulateData({
   isDate = false,
   code,
 }) {
-  let populatedData = {};
+  let populatedData = {
+    code,
+    value: '',
+  };
   if (arrayData && arrayData.length) {
     if (code === 'A11') {
       // save first
     } else if (!isDate && startIndex >= 0 && !endIndex) {
-      populatedData = {
-        code: code,
-        value:
-          arrayData[startIndex] &&
-          arrayData[startIndex].value &&
-          arrayData[startIndex].value !== ':'
-            ? arrayData[startIndex].value
-            : '',
-      };
+      populatedData.value = populatedData.value =
+        arrayData[startIndex] && arrayData[startIndex].value
+          ? arrayData[startIndex].value
+          : '';
     } else if (startIndex && endIndex) {
       const arraySliced = arrayData.slice(startIndex, endIndex);
       const arrayJoined =
@@ -202,15 +200,9 @@ async function processPopulateData({
             ? moment(arrayJoined, 'DDMMYYYY').format('DD/MM/YYYY')
             : '';
 
-        populatedData = {
-          code: code,
-          value: arrayFormattedDate,
-        };
+        populatedData.value = arrayFormattedDate;
       } else {
-        populatedData = {
-          code: code,
-          value: arrayJoined,
-        };
+        populatedData.value = arrayJoined;
       }
     }
   }
