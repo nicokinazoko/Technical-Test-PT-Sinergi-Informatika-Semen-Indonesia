@@ -134,7 +134,7 @@ async function ReadDataFromJSON(convertedJSON) {
       const npwpDipotong = await ProcessPopulateData({
         arrayData: convertedJSON,
         startIndex: 19,
-        endIndex: 35,
+        endIndex: 34,
         code: 'A1',
       });
 
@@ -244,30 +244,49 @@ async function ProcessPopulateData({
             : '';
       } else if (startIndex && endIndex) {
         // if pass parameter start index and end index
-        // get data array from start index to end index
-        const arraySliced = arrayData.slice(startIndex, endIndex);
-
-        // combine the sliced array into string
-        const arrayJoined =
-          arraySliced && arraySliced.length
-            ? arraySliced.map((array) => array.value).join('')
-            : '';
-
+        // if code is A1, then ue different approach
         if (code === 'A1') {
-          populatedData.value = arrayJoined;
-        } else if (isDate) {
-          // if paramter date is used
-          // format string to use format date
-          const arrayFormattedDate =
-            arrayJoined && arrayJoined.length
-              ? moment(arrayJoined, 'DDMMYYYY').format('DD/MM/YYYY')
+          // currently populate data with value manually from array
+          populatedData.value =
+            arraySliced[3].value +
+            arraySliced[1].value +
+            arraySliced[12].value +
+            arraySliced[7].value +
+            arraySliced[0].value +
+            arraySliced[13].value +
+            arraySliced[4].value +
+            arraySliced[10].value +
+            arraySliced[2].value +
+            arraySliced[5].value +
+            arraySliced[6].value +
+            arraySliced[8].value +
+            arraySliced[9].value +
+            arraySliced[11].value +
+            arraySliced[14].value;
+        } else {
+          // get data array from start index to end index
+          const arraySliced = arrayData.slice(startIndex, endIndex);
+
+          // combine the sliced array into string
+          const arrayJoined =
+            arraySliced && arraySliced.length
+              ? arraySliced.map((array) => array.value).join('')
               : '';
 
-          // populate value with string formatted date
-          populatedData.value = arrayFormattedDate;
-        } else {
-          // if not date, then set value with joined array string
-          populatedData.value = arrayJoined;
+          if (isDate) {
+            // if paramter date is used
+            // format string to use format date
+            const arrayFormattedDate =
+              arrayJoined && arrayJoined.length
+                ? moment(arrayJoined, 'DDMMYYYY').format('DD/MM/YYYY')
+                : '';
+
+            // populate value with string formatted date
+            populatedData.value = arrayFormattedDate;
+          } else {
+            // if not date, then set value with joined array string
+            populatedData.value = arrayJoined;
+          }
         }
       }
     }
