@@ -36,12 +36,9 @@ async function readDataFromJSON(json) {
       const parseJSON = JSON.parse(dataFromJson);
 
       if (parseJSON && parseJSON.length) {
-        const npwpDipotong = await processPopulateData({
-          arrayData: parseJSON,
-          startIndex: 19,
-          endIndex: 35,
-          code: 'A1',
-        });
+        /* Section populate data to new JSON */
+
+        // section H
         const nomorPemotonganPajak = await processPopulateData({
           arrayData: parseJSON,
           startIndex: 146,
@@ -49,9 +46,44 @@ async function readDataFromJSON(json) {
           code: 'H1',
         });
 
+        const statusPembetulan = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 156,
+          code: 'H2',
+        });
+
+        const nomorPembetulan = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 158,
+          code: 'H2',
+        });
+
+        const statusPembatalan = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'H3',
+        });
+
+        const statusPphFinal = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'H4',
+        });
+
+        const statusPPHTidaKfinal = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 157,
+          code: 'H5',
+        });
+
+        // section A
+        const npwpDipotong = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 19,
+          endIndex: 35,
+          code: 'A1',
+        });
+
         const nikWajibPajakDipotong = await processPopulateData({
           arrayData: parseJSON,
-          startIndex: 36,
           code: 'A2',
         });
 
@@ -61,40 +93,7 @@ async function readDataFromJSON(json) {
           code: 'A3',
         });
 
-        const noFakturPajak = await processPopulateData({
-          arrayData: parseJSON,
-          startIndex: 73,
-          code: 'B8',
-        });
-
-        const tanggalFakturPajak = await processPopulateData({
-          arrayData: parseJSON,
-          startIndex: 74,
-          endIndex: 82,
-          isDate: true,
-          code: 'B8',
-        });
-
-        const namaPenandaTangan = await processPopulateData({
-          arrayData: parseJSON,
-          startIndex: 135,
-          code: 'C4',
-        });
-
-        const namaWajibPajakPemotong = await processPopulateData({
-          arrayData: parseJSON,
-          startIndex: 117,
-          code: 'C2',
-        });
-
-        const tanggalPemotong = await processPopulateData({
-          arrayData: parseJSON,
-          startIndex: 124,
-          endIndex: 132,
-          isDate: true,
-          code: 'C3',
-        });
-
+        // section B
         const masaPajak = await processPopulateData({
           arrayData: parseJSON,
           startIndex: 159,
@@ -111,6 +110,11 @@ async function readDataFromJSON(json) {
           startIndex: 161,
           code: 'B3',
         });
+        const statusDikenakanTarifLebihTinggi = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'B4',
+        });
+
         const tarifPersentase = await processPopulateData({
           arrayData: parseJSON,
           startIndex: 162,
@@ -123,16 +127,98 @@ async function readDataFromJSON(json) {
           code: 'B6',
         });
 
+        const dokumenReferensi = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'B7',
+        });
+
+        const noFakturPajak = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 73,
+          code: 'B8',
+        });
+
+        const tanggalFakturPajak = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 74,
+          endIndex: 82,
+          isDate: true,
+          code: 'B8',
+        });
+
+        const nomorSKB = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'B9',
+        });
+
+        const nomorPphDTP = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'B10',
+        });
+
+        const nomorPphTransaksi = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'B11',
+        });
+        const nomorPphDipotongFasilitas = await processPopulateData({
+          arrayData: parseJSON,
+          code: 'B12',
+        });
+
+        // section C
         const npwpPemungut = await processPopulateData({
           arrayData: parseJSON,
           startIndex: 99,
           endIndex: 114,
           code: 'C1',
         });
-        // =================================================================
+
+        const namaWajibPajakPemotong = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 117,
+          code: 'C2',
+        });
+
+        const tanggalPemotong = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 124,
+          endIndex: 132,
+          isDate: true,
+          code: 'C3',
+        });
+
+        const namaPenandaTangan = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 135,
+          code: 'C4',
+        });
+
+        const jenisPernyataanWajibPajak = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 165,
+          code: 'C5',
+        });
+
+        const statusPernyataanWajibPajak = await processPopulateData({
+          arrayData: parseJSON,
+          startIndex: 166,
+          code: 'C5',
+        });
+
+        /* End section populate data to new JSON */
+
+        /* Start section push data to new JSON */
 
         // section H
         preparedJSON.push(nomorPemotonganPajak);
+        preparedJSON.push({
+          code: 'H2',
+          value: `${statusPembetulan.value} ${nomorPembetulan.value}`,
+        });
+
+        preparedJSON.push(statusPembatalan);
+        preparedJSON.push(statusPphFinal);
+        preparedJSON.push(statusPPHTidaKfinal);
 
         // section A
         preparedJSON.push(npwpDipotong);
@@ -141,16 +227,23 @@ async function readDataFromJSON(json) {
 
         // section B
         preparedJSON.push(masaPajak);
-
         preparedJSON.push(kodeObjekPajak);
         preparedJSON.push(dasarPengenaanPajak);
+        preparedJSON.push(statusDikenakanTarifLebihTinggi);
         preparedJSON.push(tarifPersentase);
+
         preparedJSON.push(pphDipungut);
+        preparedJSON.push(dokumenReferensi);
 
         preparedJSON.push({
           code: 'B8',
           value: `${noFakturPajak.value} ${tanggalFakturPajak.value}`,
         });
+
+        preparedJSON.push(nomorSKB);
+        preparedJSON.push(nomorPphDTP);
+        preparedJSON.push(nomorPphTransaksi);
+        preparedJSON.push(nomorPphDipotongFasilitas);
 
         // section C
         preparedJSON.push(npwpPemungut);
@@ -158,11 +251,18 @@ async function readDataFromJSON(json) {
         preparedJSON.push(namaWajibPajakPemotong);
         preparedJSON.push(tanggalPemotong);
         preparedJSON.push(namaPenandaTangan);
+        preparedJSON.push({
+          code: 'C5',
+          value: `${statusPernyataanWajibPajak.value} - ${jenisPernyataanWajibPajak.value} `,
+        });
+
+        /* End section push data to new JSON */
       }
     }
   }
 
   console.log(preparedJSON);
+
   return preparedJSON;
 }
 
