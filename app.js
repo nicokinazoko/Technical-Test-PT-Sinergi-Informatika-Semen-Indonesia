@@ -1,8 +1,9 @@
-const fs = require('fs');
+const fs = await import('fs');
 
-const pdf = require('pdf-parse');
-const PDFParser = require('pdf2json');
-const moment = require('moment');
+import PDFParser from 'pdf2json';
+
+import moment from 'moment';
+import puppeteer from 'puppeteer';
 
 // async function readPDF(filePath) {
 //   try {
@@ -213,7 +214,7 @@ async function readDataFromJSON(json) {
         preparedJSON.push(nomorPemotonganPajak);
         preparedJSON.push({
           code: 'H2',
-          value: `${statusPembetulan.value} ${nomorPembetulan.value}`,
+          value: `${statusPembetulan.value} Pembetulan ke-${nomorPembetulan.value}`,
         });
 
         preparedJSON.push(statusPembatalan);
@@ -263,6 +264,8 @@ async function readDataFromJSON(json) {
 
   console.log(preparedJSON);
 
+  await generatePDF(preparedJSON);
+
   return preparedJSON;
 }
 
@@ -308,4 +311,173 @@ async function processPopulateData({
   }
 
   return populatedData;
+}
+
+async function GeneratePDFHTML(json) {
+  let htmlContent = `<html><body><table>`;
+
+  if (json && json.length) {
+    const groupsBasedOnCode = json.reduce((acc, data) => {
+      const group = data.code[0]; // Get first character ('H', 'A', 'B', 'C')
+    
+      // Check if the group exists, otherwise initialize an empty array
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+    
+      // Push the data item into the corresponding group
+      acc[group].push(data);
+      
+      return acc;
+    }, {});
+    
+    console.log(groupsBasedOnCode);
+    
+
+    // for (let group in groupedData) {
+    //   let groupItems = groupedData[group];
+
+    //   if (group === 'H') {
+    //     // For H group, each item goes to a new line
+    //     groupItems.forEach((item) => {
+    //       htmlContent += `<li>${item.code}: ${item.value || 'N/A'}</li>`;
+    //     });
+    //   } else {
+    //     // For A, B, C groups, join items in a single line
+    //     let groupText = `${group}:`;
+    //     groupItems.forEach((item, index) => {
+    //       groupText += ` ${item.code}: ${item.value || 'N/A'}`;
+    //       if (index !== groupItems.length - 1) {
+    //         groupText += ' -'; // Add separator only if not the last item
+    //       }
+    //     });
+    //     htmlContent += `<li>${groupText}</li>`;
+    //   }
+    // }
+
+    // for (const datafromJSON of json) {
+    //   let counterData;
+    //   if (datafromJSON.code.includes('H')) {
+    //     htmlContent += `
+    //     <tr>
+    //     <td>
+    //     ${datafromJSON.code} : </td>
+    //     <td>${datafromJSON.value}
+    //     </td>
+    //     </tr>`;
+    //   } else {
+    //     htmlContent += `
+    //     <tr>
+    //     <td>
+    //     ${datafromJSON.code} : </td>
+    //     <td>${datafromJSON.value}
+    //     </td>
+    //     </tr>`;
+
+    //   }
+    //   // await page.setContent(`<h1>${dataFromJson.value}</h1>`);
+    //   // await page.setContent('<h1>Hello, World!</h1>');
+    //   console.log(json);
+    // }
+
+    // if (json && json.length) {
+    //   // Group the data by their prefixes (H, A, B, C)
+    //   const groupedData = json.reduce((acc, item) => {
+    //     const prefix = item.code[0]; // Get the first letter (H, A, B, C)
+    //     if (!acc[prefix]) {
+    //       acc[prefix] = [];
+    //     }
+    //     acc[prefix].push(item);
+    //     return acc;
+    //   }, {});
+
+    //   // Loop through each group (H, A, B, C)
+    //   for (const group in groupedData) {
+    //     let groupItems = groupedData[group];
+
+    //     // For H group, each item will go on a new line
+    //     if (group === 'H') {
+    //       groupItems.forEach((item) => {
+    //         htmlContent += `
+    //         <tr>
+    //           <td>${item.code}:</td>
+    //           <td>${item.value || 'N/A'}</td>
+    //         </tr>`;
+    //       });
+    //     } else {
+    //       // For A, B, and C groups, concatenate values with ' - ' separator
+    //       let groupText = groupItems
+    //         .map((item) => `${item.code}: ${item.value || 'N/A'}`)
+    //         .join(' - ');
+
+    //       htmlContent += `
+    //       <tr>
+    //         <td>${group}:</td>
+    //         <td>${groupText}</td>
+    //       </tr>`;
+    //     }
+    //   }
+    // }
+
+    for (const groupCode in groupsBasedOnCode) {
+      if (groupCode === 'H') {
+        let groupItems = groupsBasedOnCode[groupCode];
+        groupItems.forEach((groupItem) => {
+          htmlContent += `
+            <tr>
+              <td>${groupItem.code} : </td>
+              <td>${groupItem.value}</td>
+            </tr>
+          `;
+        });
+      } else {
+      }
+    }
+    htmlContent += `</table></body></html>`;
+
+    return htmlContent;
+  }
+
+  htmlContent += `</table></body></html>`;
+
+  return htmlContent;
+}
+
+// async function createPDFFromJSON(json) {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   for (const dataFromJson of json) {
+//     await page.setContent(`<h1>${dataFromJson.value}</h1>`);
+//     // await page.setContent('<h1>Hello, World!</h1>');
+//     console.log(dataFromJson);
+//   }
+//   // await page.setContent('<h1>Hello, World!</h1>');
+//   await page.pdf({
+//     path: './BE/file/fileupload/document.pdf',
+//     format: 'A4',
+//   });
+
+//   await browser.close();
+// }
+
+// (async () => {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   await page.setContent('<h1>Hello, World!</h1>');
+//   await page.pdf({
+//     path: './BE/file/fileupload/document.pdf',
+//     format: 'A4',
+//   });
+// })();
+
+// Function to generate PDF
+async function generatePDF(json) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  const html = await GeneratePDFHTML(json); // Generate HTML content
+  await page.setContent(html); // Set content on the page
+  await page.pdf({ path: 'output.pdf', format: 'A4' }); // Generate PDF
+
+  await browser.close();
 }
