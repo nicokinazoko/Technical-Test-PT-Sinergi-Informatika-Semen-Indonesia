@@ -244,9 +244,18 @@ async function ProcessPopulateData({
             : '';
       } else if (startIndex && endIndex) {
         // if pass parameter start index and end index
+        // get data array from start index to end index
+        const arraySliced = arrayData.slice(startIndex, endIndex);
+
+        // combine the sliced array into string
+        const arrayJoined =
+          arraySliced && arraySliced.length
+            ? arraySliced.map((array) => array.value).join('')
+            : '';
+
         // if code is A1, then ue different approach
         if (code === 'A1') {
-          // currently populate data with value manually from array
+          // currently populate data with rearrange value manually from array
           populatedData.value =
             arraySliced[3].value +
             arraySliced[1].value +
@@ -264,15 +273,6 @@ async function ProcessPopulateData({
             arraySliced[11].value +
             arraySliced[14].value;
         } else {
-          // get data array from start index to end index
-          const arraySliced = arrayData.slice(startIndex, endIndex);
-
-          // combine the sliced array into string
-          const arrayJoined =
-            arraySliced && arraySliced.length
-              ? arraySliced.map((array) => array.value).join('')
-              : '';
-
           if (isDate) {
             // if paramter date is used
             // format string to use format date
@@ -376,6 +376,7 @@ async function GeneratePDF(json) {
     await page.pdf({ path: fileName, format: 'A4' });
 
     await browser.close();
+    console.log('Process Create PDF done, file name : ' + fileName);
   } catch (error) {
     // throw error
     throw new Error('Error when generate PDF', error.stack);
