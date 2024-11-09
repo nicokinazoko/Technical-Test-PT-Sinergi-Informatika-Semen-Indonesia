@@ -326,12 +326,12 @@ async function GeneratePDFHTML(json) {
             // if index is odd number, then not close the tag row
             htmlContent += `
             <tr>
-              <td> ${datafromJSON.code} : </td>
+              <td>${datafromJSON.code} : </td>
               <td>${datafromJSON.value} </td>`;
           } else {
             // if index is even number, then close the tag row
             htmlContent += `
-              <td>${datafromJSON.code} : </td>
+              <td>- ${datafromJSON.code} : </td>
               <td>${datafromJSON.value} </td>
             </tr>`;
           }
