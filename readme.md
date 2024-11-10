@@ -19,7 +19,7 @@ This application is designed to:
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/nicokinazoko/Technical-Test-PT-Sinergi-Informatika-Semen-Indonesia.git](https://github.com/nicokinazoko/Technical-Test-PT-Sinergi-Informatika-Semen-Indonesia.git)
+   git clone https://github.com/nicokinazoko/Technical-Test-PT-Sinergi-Informatika-Semen-Indonesia.git
    ```
 2. **Go to directory**
    ```bash
